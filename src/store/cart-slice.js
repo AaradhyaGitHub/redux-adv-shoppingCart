@@ -6,7 +6,7 @@ initialCartState = {
   totalAmount: 0
 };
 
-createSlice({
+const cartSlice = createSlice({
   name: "cart",
   initialState: initialCartState,
   reducers: {
@@ -34,7 +34,12 @@ createSlice({
         state.items = state.items.filter((item) => item.id !== id);
       } else {
         existingItem.quantity--;
+        existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
       }
     }
   }
 });
+
+const const cartActions = cartSlice.actions;
+
+export default cartSlice;
