@@ -4,7 +4,7 @@ import Layout from "./components/Layout/Layout";
 import Products from "./components/Shop/Products";
 import { useEffect, Fragment } from "react";
 import Notification from "./components/UI/Notification";
-import { uiActions } from "./store/ui-slice";
+import {sendCartData} from "./store/cart-slice";
 
 let isInitial = true;
 
@@ -15,49 +15,12 @@ function App() {
   const notification = useSelector((state) => state.ui.notification);
 
   useEffect(() => {
-    const sendCartData = async () => {
-      dispatch(
-        uiActions.showNotification({
-          status: "pending",
-          title: "Sending...",
-          message: "Sending cart data..."
-        })
-      );
-      const response = await fetch(
-        "https://react-redux-8a027-default-rtdb.firebaseio.com/cart.json",
-        {
-          method: "PUT",
-          body: JSON.stringify(cart)
-        }
-      );
-      if (!response) {
-        throw new Error("Sending cart data failed");
-      }
-
-      dispatch(
-        uiActions.showNotification({
-          status: "success!",
-          title: "success",
-          message: "Sent Cart Data Successfully"
-        })
-      );
-    };
-
-    if(isInitial){
+    if (isInitial) {
       isInitial = false;
       return;
     }
 
-    
-    sendCartData().catch((error) => {
-      dispatch(
-        uiActions.showNotification({
-          status: "error",
-          title: "Error!",
-          message: "Sedning cart data failed!"
-        })
-      );
-    });
+    dispatch(sendCartData(cart));
   }, [cart, dispatch]);
 
   return (
